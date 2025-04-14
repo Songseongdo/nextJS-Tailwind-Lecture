@@ -1,9 +1,5 @@
 @import "tailwindcss";
 
-.text-bigger-hello {
-	@apply text-3xl font-semibold;
-}
-
 /*
 html,
 body,

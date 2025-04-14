@@ -24,6 +24,7 @@ export default async function RootPage() {
 						</div>
 					</div>
 				))}
+				<button className="btn">Default</button>
 			</div>
 		</main>
 	);
