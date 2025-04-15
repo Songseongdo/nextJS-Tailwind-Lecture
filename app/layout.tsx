@@ -12,7 +12,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 					rel="stylesheet"
 				/>
 			</head>
-			<body>
+			<body className="bg-gray-900 text-white h-screen max-w-lg m-auto">
 				<RecoilProvider>{children}</RecoilProvider>
 			</body>
 		</html>

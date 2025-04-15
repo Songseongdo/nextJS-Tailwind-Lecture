@@ -1,5 +1,4 @@
 import { getBookDetail } from "../../../api";
-import BookInfo from "../../../components/book-info";
 import styles from "../../../styles/detail.module.css";
 
 interface IParams {
@@ -20,18 +19,7 @@ export default async function BookDetail({ params }: IParams) {
 	return (
 		<div className={styles.container}>
 			<div className={styles.title}>{detail.list_name_encoded}</div>
-			<div className={styles.book_detail_container}>
-				{detail?.books.map((book, idx) => (
-					<BookInfo
-						key={`book_key_${idx}`}
-						$title={book.title}
-						$author={book.author}
-						$img_url={book.book_image}
-						$product_url={book.amazon_product_url}
-						$buy_link={book.buy_links}
-					/>
-				))}
-			</div>
+			<div className={styles.book_detail_container}></div>
 		</div>
 	);
 }
