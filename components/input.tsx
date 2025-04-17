@@ -1,24 +1,26 @@
+import { forwardRef, InputHTMLAttributes } from "react";
+
 interface IFromInputProps {
-	$type: string;
-	$placeholder: string;
-	$required: boolean;
-	$errors: string[];
+	$name: string;
+	$errors?: string[];
 }
 
-export default function FormInput({ $type, $errors, $placeholder, $required }: IFromInputProps) {
+const _Input = ({ $name, $errors = [], ...rest }: IFromInputProps & InputHTMLAttributes<HTMLInputElement>) => {
 	return (
 		<div className="flex flex-col gap-2">
 			<input
 				className="p-4 bg-transparent rounded-md w-full h-10 focus:outline-none ring-2 focus:ring-4 ring-neutral-200 focus:ring-orange-500 border-none placeholder:text-neutral-400"
-				type={$type}
-				placeholder={$placeholder}
-				required={$required}
+				name={$name}
+				{...rest}
 			/>
-			{$errors.map((error, index) => (
+
+			{$errors?.map((error, index) => (
 				<span key={index} className="text-red-500 font-medium">
 					{error}
 				</span>
 			))}
 		</div>
 	);
-}
+};
+
+export default forwardRef(_Input);

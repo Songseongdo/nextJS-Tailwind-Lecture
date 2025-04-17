@@ -13,6 +13,7 @@
 }
 
 @import "./challenge.css";
+@import "./challenge25.css";
 
 @plugin "daisyui" {
 	themes: night --default;
