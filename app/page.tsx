@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import "../lib/db";
 
 export const metadata: Metadata = {
 	title: "Tailwind CSS",

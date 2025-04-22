@@ -6,9 +6,11 @@ import FormInput from "../../components/input";
 import SocialLogin from "../../components/social-login";
 import { useFormState } from "react-dom";
 import { handleForm } from "./actions";
+import { PASSWORD_MIN_LENGTH } from "../../lib/constatns";
+import { getError } from "../../util";
 
 export default function LogIn() {
-	const [state, action] = useFormState(handleForm, null);
+	const [state, dispatch] = useFormState(handleForm, null);
 
 	return (
 		<div className="flex flex-col gap-10 py-8 px-6">
@@ -17,14 +19,15 @@ export default function LogIn() {
 				<h1 className="text-2xl">안녕하세요!</h1>
 				<h2 className="text-xl">Log in with email and password.</h2>
 			</div>
-			<form action={action} className="flex flex-col gap-3">
-				<FormInput $name="email" type="email" placeholder="Email" required $errors={state?.errors ?? []} />
+			<form action={dispatch} className="flex flex-col gap-3">
+				<FormInput $name="email" type="email" placeholder="Email" required $errors={getError(state, "email")} />
 				<FormInput
 					$name="password"
-					$errors={state?.errors ?? []}
 					type="password"
 					placeholder="Password"
 					required
+					$errors={getError(state, "password")}
+					minLength={PASSWORD_MIN_LENGTH}
 				/>
 				<FormButton $text="Log in" />
 			</form>

@@ -1,3 +1,5 @@
+import { USERNAME_MAX_LENGTH, USERNAME_MIN_LENGTH } from "../../lib/constatns";
+
 export const fieldNames = ["username", "email", "password", "confirm_password"] as const;
 
 type InputName = (typeof fieldNames)[number];
@@ -15,8 +17,8 @@ export const inputArr: {
 		type: "text",
 		require: true,
 		placeholder: "Username",
-		minLength: 3,
-		maxLength: 10,
+		minLength: USERNAME_MIN_LENGTH,
+		maxLength: USERNAME_MAX_LENGTH,
 	},
 	{
 		name: "email",
