@@ -85,7 +85,6 @@ export async function createAccount(prevState: any, formData: FormData): Promise
 		// save the user to db (Prisma)
 		// log the user in
 		// redirect "/home"
-		console.log("succes");
 
 		return { success: true };
 	}
