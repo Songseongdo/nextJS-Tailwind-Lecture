@@ -1,3 +1,15 @@
+# 스펙
+
+-   bcrypt: 5.1.1
+-   next: 14.1.0
+-   react: 18.20
+-   recoil: 0.7.7
+-   tailwindcss: 4.1.3
+-   validator: 13.15.0
+-   zod: 3.24.2
+-   prisma: 6.6.0
+-   iron-session: 8.0.4
+
 # Server Action
 
 1. Server Action 은 POST 전용
@@ -31,7 +43,7 @@
 <details>
 <summary>superRefine</summary>
 
-```ruby
+```ts
 .superRefine((val, ctx) => {
     if (!validator.isMobilePhone(val, "ko-KR")) {
         ctx.addIssue({
@@ -91,14 +103,13 @@ npx prisma studio
 
 4.  schema 변경 시 migrate dev 를 반드시 해야 함
 
-5.  플러그인 prisma 다운 cmd + shift + p로 JSON settings 파일을 열고
+5.  플러그인 prisma 다운 cmd + shift + p로 JSON settings 파일을 열고 추가하면 save시 릴레이션 자동완성 됩니다.
 
-        `   "[prisma]": {
-        "editor.defaultFormatter": "Prisma.prisma"
-
-    }`
-
-        추가하면 save시 릴레이션 자동완성 됩니다.
+    ```
+    "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+    }
+    ```
 
 6.  [onDelete](./prisma/schema.prisma)
 
@@ -110,6 +121,158 @@ npx prisma studio
 
     safeParse() => safeParseAsync() 변경 필요
 
+8.  [hashing password](./app/create-account/actions.ts)
+    <details>
+    <summary>코드</summary>
+
+    ```ts
+    import bcrypt from "bcrypt";
+
+    const hashedPassword = await bcrypt.hash(result.data.password, 12);
+    ```
+
+    </details>
+
+9.  [use cookie](./app/create-account/actions.ts)
+    <details>
+    <summary>iron-session를 통한 crypt</summary>
+
+    ```ts
+    import { getIronSession } from "iron-session";
+    import { redirect } from "next/navigation";
+
+    // log the user in
+    const cookie = await getIronSession(cookies(), {
+    	cookieName: "delicious-carrot",
+    	password: process.env.COOKIE_PASSWORD || "",
+    });
+
+    // @ts-ignore
+    cookie.id = user.id;
+    await cookie.save();
+    ```
+
+    </details>
+
+10. [Email Log In](./app/login/actions.ts)
+    <details>
+    <summary>DB 확인 후 crypt 값과 비교</summary>
+
+    ```ts
+    const user = await db.user.findUnique({
+    	where: {
+    		email: result.data.email,
+    	},
+    	select: {
+    		id: true,
+    		password: true,
+    	},
+    });
+
+    const ok = await bcrypt.compare(result.data.password, user!.password ?? "");
+    if (ok) {
+    	const session = await getSession();
+    	session.id = user!.id;
+    	redirect("/profile");
+    } else {
+    	return {
+    		success: false,
+    		fieldErrors: { password: ["Wrong password."] },
+    	};
+    }
+    ```
+
+    </details>
+
+11. [Log Out](./app/profile/page.tsx)
+
+    Log out 기능을 Button 이 아닌 Form action에 넣어서 "use client" 가 아닌 "use server" 호출
+
+    <details>
+
+    <summary>log out</summary>
+
+    ```ts
+    const logout = async () => {
+    	"use server";
+    	const session = await getSession();
+    	await session.destroy();
+
+    	redirect("/");
+    };
+    ```
+
+    ```typescript
+    <form action={logout}>
+    	<Button $text="Log Out"></Button>
+    </form>
+    ```
+
+    </details>
+
+12. [middleware](middleware.ts)
+
+    파일명은 반드시 **middleware**
+
+    함수명은 반드시 **"middleware", "config"**
+
+    모든 request 마다 호출 됨.
+
+    config를 통해서 실행하지 않을 url 를 설정할 수 있음.
+
+    <details>
+    <summary>redirect</summary>
+
+    ```ts
+    export async function middleware(request: NextRequest) {
+    	const session = await getSession();
+
+    	if (request.nextUrl.pathname === "/profile") {
+    		return NextResponse.redirect(new URL("/", request.url));
+    	}
+    }
+    ```
+
+    </details>
+
+    <details>
+    <summary>config matcher</summary>
+
+    ```ts
+    export const config = {
+    	matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+    };
+    ```
+
+    </details>
+
+    <details>
+    <summary>authentication middleware</summary>
+
+    ```ts
+    const session = await getSession();
+    const exists = publicOnyUrls[request.nextUrl.pathname];
+    if (!session.id) {
+    	if (!exists) {
+    		return NextResponse.redirect(new URL("/", request.url));
+    	}
+    } else {
+    	if (exists) {
+    		return NextResponse.redirect(new URL("/", request.url));
+    	}
+    }
+    ```
+
+    </details>
+
+13. Edge Function
+
+    node.js 의 경량 버전
+
+    middleware 는 node runtime 에 실행되지 않음
+
+    모든 node.js 의 코드 및 NPM 을 사용할 수 있지 않음
+
 <br /><br /><br />
 
 # 이슈 해결
@@ -119,28 +282,30 @@ npx prisma studio
 <details>
 <summary>고유한 key 값을 지정하면 다른 컴포넌트로 인식</summary>
 
-```ruby
-{state?.token ? (
-    <FormInput
-        key="verifycode"
-        type="number"
-        placeholder="Verification code"
-        required
-        min={100000}
-        max={999999}
-        $name="verifycode"
-        $errors={getError(state, "verifycode")}
-    />
-) : (
-    <FormInput
-        key="phonenumber"
-        type="number"
-        placeholder="Phone number"
-        required
-        $name="phonenumber"
-        $errors={getError(state, "phonenumber")}
-    />
-)}
+```ts
+{
+	state?.token ? (
+		<FormInput
+			key="verifycode"
+			type="number"
+			placeholder="Verification code"
+			required
+			min={100000}
+			max={999999}
+			$name="verifycode"
+			$errors={getError(state, "verifycode")}
+		/>
+	) : (
+		<FormInput
+			key="phonenumber"
+			type="number"
+			placeholder="Phone number"
+			required
+			$name="phonenumber"
+			$errors={getError(state, "phonenumber")}
+		/>
+	);
+}
 ```
 
 </details>
