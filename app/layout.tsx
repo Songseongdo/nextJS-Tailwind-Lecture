@@ -1,5 +1,14 @@
+import { Metadata } from "next";
 import RecoilProvider from "../components/recoil-provider";
 import "../styles/global.css";
+
+export const metadata: Metadata = {
+	title: {
+		template: "%s | Karrot Market",
+		default: "Karrot Market",
+	},
+	description: "Sell and buy all product",
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
@@ -12,7 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 					rel="stylesheet"
 				/>
 			</head>
-			<body className="bg-gray-900 text-white h-screen max-w-lg m-auto">
+			<body className="bg-gray-900 text-white h-screen w-screen m-auto">
 				<RecoilProvider>{children}</RecoilProvider>
 			</body>
 		</html>

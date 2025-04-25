@@ -12,6 +12,10 @@ const publicOnyUrls: IRoutes = {
 	"/github/start": true,
 	"/github/complete": true,
 	"/profile": true,
+	"/chats": true,
+	"/life": true,
+	"/live": true,
+	"/products": true,
 };
 
 export async function middleware(request: NextRequest) {
