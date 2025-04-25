@@ -9,6 +9,7 @@
 -   zod: 3.24.2
 -   prisma: 6.6.0
 -   iron-session: 8.0.4
+-   twilio: 5.5.2
 
 # Server Action
 
@@ -272,6 +273,26 @@ npx prisma studio
     middleware 는 node runtime 에 실행되지 않음
 
     모든 node.js 의 코드 및 NPM 을 사용할 수 있지 않음
+
+14. Github Authentication
+
+    1.  Github 개발자 설정에서 OAuth Apps 생성
+
+    2.  **Client ID, Client secrets** '.env' 파일에 저장
+
+        사용자에게 공개 되지 않도록 관리
+
+    3.  github/start/route.ts, github/complete/route.ts 에서 GET/POST 구현
+
+    4.  OAuth(code) --> AccessToken 순서로 인증 요청
+
+        ```
+        1. 깃헙 로그인 시도 (https://github.com/login/oauth/authorize)
+        2. 로그인 완료 시 설정된 url로 redirect 및 code 값 받음
+        3. github에서 받은 code 값으로 access_token 요청
+        4. access_token 값으로 user 정보 요청
+        5. user 정보의 값으로 db 와 대조 및 app 로그인
+        ```
 
 <br /><br /><br />
 

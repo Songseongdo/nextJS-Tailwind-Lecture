@@ -15,8 +15,6 @@ const initialState: FormActionResult = {
 export default function SMSLogin() {
 	const [state, dispatch] = useFormState<FormActionResult, FormData>(smsVerification, initialState);
 
-	console.log(state);
-
 	return (
 		<div className="flex flex-col gap-10 py-8 px-6">
 			<Link href="/login">&larr; 로그인으로</Link>
@@ -25,7 +23,7 @@ export default function SMSLogin() {
 				<h2 className="text-xl">Verify your phone number.</h2>
 			</div>
 			<form action={dispatch} className="flex flex-col gap-3">
-				{state?.success && state.token ? (
+				{state?.token ? (
 					<FormInput
 						key="verifycode"
 						$name="verifycode"
@@ -40,14 +38,14 @@ export default function SMSLogin() {
 					<FormInput
 						key="phonenumber"
 						$name="phonenumber"
-						type="number"
+						type="text"
 						placeholder="Phone number"
 						required
 						$errors={getError(state, "phonenumber")}
 					/>
 				)}
 
-				<FormButton $text={state?.success && state.token ? "Send SMS Code" : "Verify"} />
+				<FormButton $text={state?.token ? "Send SMS Code" : "Verify"} />
 			</form>
 		</div>
 	);

@@ -2,7 +2,7 @@ export type FormFields = "email" | "password" | "username" | "confirm_password" 
 export type FormActionResult =
 	| null
 	| { success: true; token?: boolean }
-	| { success: false; fieldErrors?: Partial<Record<FormFields, string[]>> };
+	| { success: false; token?: boolean; fieldErrors: Partial<Record<FormFields, string[]>> };
 
 export function getError(state: FormActionResult, name: FormFields): string[] {
 	if (state && !state.success && state.fieldErrors) {

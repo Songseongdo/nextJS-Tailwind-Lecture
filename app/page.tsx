@@ -1,9 +1,8 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import "../lib/db";
 
 export const metadata: Metadata = {
-	title: "Tailwind CSS",
+	title: "Karrot Market",
 };
 
 export default async function RootPage() {

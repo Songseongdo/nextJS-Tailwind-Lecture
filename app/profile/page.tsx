@@ -3,6 +3,8 @@ import getSession from "../../lib/session";
 import Button from "../../components/button";
 import { notFound, redirect } from "next/navigation";
 
+console.log("this profile");
+
 async function getUser() {
 	const sesstion = await getSession();
 	if (sesstion.id) {
