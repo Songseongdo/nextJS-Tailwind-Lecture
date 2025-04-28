@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation";
 import { NextRequest } from "next/server";
-import db from "../../../lib/db";
-import { createUser, goLogin } from "../../../util/async";
-import { getGithubAccesToken, getGithubEmail, getGithubProfile } from "../../../api";
+
+import { createUser, goLogin } from "@/util/async";
+import { getGithubAccesToken, getGithubEmail, getGithubProfile } from "@/api";
+import db from "@/lib/db";
 
 export async function GET(request: NextRequest) {
 	const code = request.nextUrl.searchParams.get("code");

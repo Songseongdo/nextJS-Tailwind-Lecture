@@ -19,6 +19,11 @@ const publicOnyUrls: IRoutes = {
 };
 
 export async function middleware(request: NextRequest) {
+	const { pathname } = request.nextUrl;
+	if (pathname.endsWith(".jpg") || pathname.startsWith("/products")) {
+		return NextResponse.next();
+	}
+
 	const session = await getSession();
 	const exists = publicOnyUrls[request.nextUrl.pathname];
 	if (!session.id) {
@@ -26,8 +31,8 @@ export async function middleware(request: NextRequest) {
 			return NextResponse.redirect(new URL("/", request.url));
 		}
 	} else {
-		if (!exists) {
-			return NextResponse.redirect(new URL("/product", request.url));
+		if (exists) {
+			return NextResponse.redirect(new URL("/products", request.url));
 		}
 	}
 }
