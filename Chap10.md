@@ -60,3 +60,39 @@ return () => {
     observer.disconnect();
 };
 ```
+
+### 로컬 이미지 로드
+
+```TS
+const onImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const {
+        target: { files },
+    } = event;
+    if (!files) {
+        return;
+    }
+    const file = files[0];
+    const url = URL.createObjectURL(file);
+    setPreview(url);
+};
+```
+
+### Cloudflare Image
+
+> Upload URL 생성은 무료
+
+```TS
+const response = await fetch(
+    `https://api.cloudflare.com/client/v4/accounts/${process.env.CF_ACCOUNT_ID}/images/v2/direct_upload`,
+    {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${process.env.CF_API_TOKEN}`,
+        },
+    }
+);
+const data = await response.json();
+return data;
+```
+
+### Intercept React form submission

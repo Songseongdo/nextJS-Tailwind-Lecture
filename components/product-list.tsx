@@ -4,6 +4,7 @@ import { InitialProducts } from "@/app/(tabs)/products/page";
 import ListProduct from "./list-product";
 import { useEffect, useRef, useState } from "react";
 import { getMoreProducts } from "@/app/(tabs)/products/actions";
+import { PRODUCT_PAGE_SIZE } from "@/lib/constatns";
 
 interface IProductListProps {
 	initialProducts: InitialProducts;
@@ -23,7 +24,7 @@ export default function ProductList({ initialProducts }: IProductListProps) {
 				if (element.isIntersecting && trigger.current) {
 					observer.unobserve(trigger.current);
 					setIsLoading(true);
-					const newProducts = await getMoreProducts(page + 1);
+					const newProducts = await getMoreProducts(page + PRODUCT_PAGE_SIZE);
 					if (newProducts.length !== 0) {
 						setPage((prev) => prev + 1);
 					} else {
