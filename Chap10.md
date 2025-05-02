@@ -96,3 +96,48 @@ return data;
 ```
 
 ### Intercept React form submission
+
+### cache
+
+```TS
+    const getCachedProducts = nextCache(getInitialProducts, ["home-products"]);
+
+    async function getInitialProducts() {
+        console.log("hit!!!!");
+            const products = await db.product.findMany({
+            select: {
+            title: true,
+            price: true,
+            created_at: true,
+            photo: true,
+            id: true,
+            },
+            orderBy: {
+            created_at: "desc",
+            },
+        });
+   return products;
+ }
+```
+
+### route Param
+
+```TS
+    export const dynamic = "force-dynamic";
+
+    export const revaliate = 60;
+```
+
+### generateStaticParams
+
+```TS
+    export async function generateStaticParams() {
+        const products = await db.product.findMany({
+            select: {
+                id: true
+            }
+        });
+
+        return products.map((product) => { id: product.id + "" });
+    }
+```
